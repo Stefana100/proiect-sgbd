@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistici & Predictii - Cinema-online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a84c;
+            --dark: #0a0a0f;
+            --dark-2: #12121a;
+            --dark-3: #1c1c28;
+            --border: rgba(201,168,76,0.2);
+            --text: #f0ece0;
+            --text-muted: #8a8474;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { min-height: 100vh; background: var(--dark); font-family: 'DM Sans', sans-serif; color: var(--text); overflow-x: hidden; }
+
+        nav {
+            background: var(--dark-2);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+
+        .container { max-width: 800px; margin: 60px auto; padding: 0 20px; text-align: center; }
+        h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 10px; }
+        h1 em { font-style: italic; color: var(--gold); }
+        .subtitle { color: var(--text-muted); margin-bottom: 50px; font-size: 1.1rem; }
+
+        .box {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        label { display: block; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; color: var(--gold); }
+
+        select {
+            width: 100%;
+            max-width: 300px;
+            background: var(--dark-3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 1rem;
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: border-color 0.3s;
+        }
+        select:focus { border-color: var(--gold); }
+
+        .btn-start {
+            background: linear-gradient(135deg, var(--gold) 0%, #a87830 100%);
+            color: var(--dark);
+            border: none;
+            padding: 15px 40px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201,168,76,0.3); filter: brightness(1.1); }
+
+        .result-box {
+            background: linear-gradient(145deg, #1c1c28, #12121a);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            padding: 50px;
+            animation: slideUp 0.5s ease forwards;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .icon-ai { font-size: 2.5rem; margin-bottom: 20px; display: block; }
+        .result-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 15px; color: var(--gold); }
+        .result-text { font-size: 1.2rem; line-height: 1.6; color: var(--text); font-style: italic; }
+
+        .back-link { display: inline-block; margin-top: 40px; color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+        .back-link:hover { color: var(--gold); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/browse" class="logo">🎬 Cinema-online</a>
+</nav>
+
+<div class="container">
+    <h1>Analiza Sezoniera</h1>
+    <p class="subtitle">Sistemul utilizeaza istoricul de vizualizari pentru a anticipa tendintele.</p>
+
+    <div class="box">
+        <form th:action="@{/statistici}" method="get">
+            <label for="luna">Selecteaza Luna de Analizat</label>
+            <select name="luna" id="luna">
+                <option value="1">Ianuarie</option>
+                <option value="2">Februarie</option>
+                <option value="3">Martie</option>
+                <option value="4">Aprilie</option>
+                <option value="5" selected>Mai</option>
+                <option value="6">Iunie</option>
+                <option value="7">Iulie</option>
+                <option value="8">August</option>
+                <option value="9">Septembrie</option>
+                <option value="10">Octombrie</option>
+                <option value="11">Noiembrie</option>
+                <option value="12">Decembrie</option>
+            </select>
+            <br>
+            <button type="submit" class="btn-start">START ANALIZA</button>
+        </form>
+    </div>
+
+    <div class="result-box" th:if="${predictie}">
+        <span class="icon-ai">✨</span>
+        <h2 class="result-title">Predictia Sistemului</h2>
+        <p class="result-text" th:text="${predictie}"></p>
+    </div>
+
+    <a href="/browse" class="back-link">← Inapoi la Catalogul de Filme</a>
+</div>
+
+</body>
+</html>

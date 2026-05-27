@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinema-online - Filmele Tale</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a84c;
+            --dark: #0a0a0f;
+            --dark-2: #12121a;
+            --dark-3: #1c1c28;
+            --text: #f0ece0;
+            --text-muted: #8a8474;
+        }
+
+        body {
+            background: var(--dark);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background: var(--dark-2);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(201,168,76,0.15);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .container {
+            padding: 50px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .movie-card {
+            background: var(--dark-3);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .movie-info {
+            padding: 20px;
+        }
+
+        .movie-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .movie-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-stats {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .btn-stats:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-menu::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 100%;
+            height: 15px;
+            display: block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 5px);
+            background-color: var(--dark-2);
+            min-width: 180px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 10px;
+            z-index: 1000;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-menu:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a, .dropdown-content button {
+            color: var(--text);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dropdown-content a:hover, .dropdown-content button:hover {
+            background: var(--dark-3);
+            color: var(--gold);
+        }
+
+        .btn-delete-account {
+            color: #ff4444 !important;
+            border-top: 1px solid rgba(201,168,76,0.1) !important;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/browse" class="logo">🎬 Cinema-online</a>
+
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <a href="/statistici" class="btn-stats">Vezi Statistici</a>
+
+        <div class="user-menu">
+            <button class="btn-stats">👤 Contul meu</button>
+            <div class="dropdown-content">
+                <a href="/logout">🚪 Deconectare</a>
+
+                <form th:action="@{/clienti/stergere}" method="post"
+                      onsubmit="return confirm('Esti sigura ca vrei sa stergi contul? Aceasta actiune va activa triggerul de curatare a datelor si nu poate fi anulata.');">
+                    <button type="submit" class="btn-delete-account">🗑️ Stergere Cont</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1 class="section-title">Exploreaza Catalogul</h1>
+    <div class="movie-grid">
+        <a th:each="film : ${filme}" th:href="@{/film/{id}(id=${film.id_film})}" class="movie-card">
+            <div style="width: 100%; height: 380px; overflow: hidden; background: #1a1a24;">
+                <img th:src="@{'/images/posters/' + ${film.id_film} + '.jpg'}"
+                     alt="Poster Film"
+                     style="width: 100%; height: 100%; object-fit: cover;"
+                     onerror="this.src='https://via.placeholder.com/300x450?text=Cinema+Online'">
+            </div>
+            <div class="movie-info">
+                <div class="movie-meta" th:text="${film.categorie}">CATEGORIE</div>
+                <h3 class="movie-title" th:text="${film.titlu}">Titlu Film</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Vezi detalii</p>
+            </div>
+        </a>
+    </div> <div th:if="${recomandari != null and !recomandari.empty}" style="margin-top: 80px; border-top: 1px solid rgba(201,168,76,0.1); padding-top: 50px;">
+    <h2 class="section-title">Special pentru tine</h2>
+
+    <div style="background: var(--dark-2); padding: 20px; border-left: 4px solid var(--gold); border-radius: 8px; margin-bottom: 30px;">
+        <p style="margin: 0; color: var(--text);">
+            <strong>Bazat pe gusturile tale:</strong> Am analizat ce ai vizionat si iata ce iti recomandam:
+        </p>
+    </div>
+
+    <div class="movie-grid">
+        <a th:each="rec : ${recomandari}" th:href="@{/film/{id}(id=${rec.id_film})}" class="movie-card">
+            <div style="width: 100%; height: 380px; overflow: hidden; background: #1a1a24;">
+                <img th:src="@{'/images/posters/' + ${rec.id_film} + '.jpg'}"
+                     alt="Poster Film"
+                     style="width: 100%; height: 100%; object-fit: cover;"
+                     onerror="this.src='https://via.placeholder.com/300x450?text=Recomandare'">
+            </div>
+            <div class="movie-info">
+                <div class="movie-meta">RECOMANDARE</div>
+                <h3 class="movie-title" th:text="${rec.titlu}">Titlu Film</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Apasa pentru vizionare</p>
+            </div>
+        </a>
+    </div>
+</div>
+</div>
+</body>
+</html>
